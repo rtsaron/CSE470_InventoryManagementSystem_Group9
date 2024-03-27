@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Profile</title>
+</head>
+<body>
+  <h1>Customer Profile</h1>
+  <div id="customerProfile"></div>
+
+  <script>
+    // Function to fetch customer profile from the backend
+    const fetchCustomerProfile = () => {
+      const customerId = 'customer_id_here'; // Replace with the actual customer ID
+
+      fetch(`/customer/${customerId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Constructing customer profile HTML
+          let profileHTML = `
+            <h2>${data.name}</h2>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Address:</strong> ${data.address}</p>
+            <p><strong>Phone:</strong> ${data.phone}</p>
+            <h3>Buying History:</h3>
+          `;
+
+          if (data.orders.length > 0) {
+            data.orders.forEach((order, index) => {
+              profileHTML += `
+                <div>
+                  <h4>Order ${index + 1}</h4>
+                  <p><strong>Date:</strong> ${order.date}</p>
+                  <p><strong>Items:</strong> ${order.items.join(', ')}</p>
+                  <p><strong>Total:</strong> ${order.total}</p>
+                </div>
+              `;
+            });
+          } else {
+            profileHTML += `<p>No buying history available.</p>`;
+          }
+
+          // Display customer profile
+          document.getElementById('customerProfile').innerHTML = profileHTML;
+        })
+        .catch(error => console.error('Error fetching customer profile:', error));
+    };
+
+    // Call the function to fetch customer profile when the page loads
+    fetchCustomerProfile();
+  </script>
+</body>
+</html>
